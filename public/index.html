@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Test</title>
+    <style>
+      [v-cloak] {
+        display: none;
+      }
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.7.4/dist/vue.js"></script>
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1"
+    />
+  </head>
+  <body>
+    <div id="app">
+      <input type="text" v-model="url" /><button @click="getIncludes">
+        Получить CSS и JS
+      </button>
+      <h2>Стили</h2>
+      <ul>
+        <li v-for="(link, k) in links" :key="k">{{link}}</li>
+      </ul>
+      <h2>Скрипты</h2>
+      <ul>
+        <li v-for="(script, k) in scripts" :key="k">{{script}}</li>
+      </ul>
+    </div>
+    <script>
+      var app = new Vue({
+        el: "#app",
+        methods: {
+          getIncludes: async function () {
+            const request = await fetch(
+              `/api/includes?url=${encodeURIComponent(this.url)}`
+            );
+            const response = await request.json();
+            if (response.success) {
+              this.links = response.data.links;
+              this.scripts = response.data.scripts;
+            } else {
+              console.log("error");
+            }
+          },
+        },
+        data: () => {
+          return {
+            url: "https://expressjs.com/ru/",
+            links: [],
+            scripts: [],
+          };
+        },
+      });
+    </script>
+  </body>
+</html>
