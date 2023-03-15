@@ -45,6 +45,9 @@
             }
           },
         },
+        mounted: function () {
+          this.getIncludes();
+        },
         data: () => {
           return {
             url: "https://expressjs.com/ru/",
