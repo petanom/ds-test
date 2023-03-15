@@ -26,17 +26,23 @@ app.get("/api/includes", async (req, res) => {
     try {
         let site = await axios.get(req.query.url);
 
-        var $ = cheerio.load(site.data);
+        let $ = cheerio.load(site.data);
 
-        var links = $('link').map(function (i) {
+        const getExtension = function (url) {
+            return url.split(/[#?]/)[0].split('.').pop().trim().toLowerCase();
+        }
+
+        let links = $('link').filter(function () { return getExtension($(this).attr('href')) == 'css' }).map(function () {
             return $(this).attr('href');
         }).get();
-        var scripts = $('script').map(function (i) {
+
+        let scripts = $('script').map(function () {
             return $(this).attr('src');
         }).get();
 
         res.status(200).json({ success: true, data: { links, scripts } });
     } catch (e) {
+        console.log(e)
         res.status(500).json({ success: false });
     }
 });
